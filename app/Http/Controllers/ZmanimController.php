@@ -237,93 +237,162 @@ class ZmanimController extends Controller
     public function getLocations(Request $request)
     {
         $lang = $request->lang ?? 'en';
-        $search = strtolower($request->search ?? '');
+        $search = $request->search ?? '';
         
-        $locations = [
-            [
-                'id' => 1,
-                'name' => $this->getLocationName('Jerusalem', $lang),
-                'latitude' => 31.7683,
-                'longitude' => 35.2137,
-                'timezone' => 'Asia/Jerusalem'
-            ],
-            [
-                'id' => 2,
-                'name' => $this->getLocationName('New York', $lang),
-                'latitude' => 40.7128,
-                'longitude' => -74.0060,
-                'timezone' => 'America/New_York'
-            ],
-            [
-                'id' => 3,
-                'name' => $this->getLocationName('London', $lang),
-                'latitude' => 51.5074,
-                'longitude' => -0.1278,
-                'timezone' => 'Europe/London'
-            ],
-            [
-                'id' => 4,
-                'name' => $this->getLocationName('Tel Aviv', $lang),
-                'latitude' => 32.0853,
-                'longitude' => 34.7818,
-                'timezone' => 'Asia/Jerusalem'
-            ],
-            [
-                'id' => 5,
-                'name' => $this->getLocationName('Los Angeles', $lang),
-                'latitude' => 34.0522,
-                'longitude' => -118.2437,
-                'timezone' => 'America/Los_Angeles'
-            ],
-            [
-                'id' => 6,
-                'name' => $this->getLocationName('Miami', $lang),
-                'latitude' => 25.7617,
-                'longitude' => -80.1918,
-                'timezone' => 'America/New_York'
-            ],
-            [
-                'id' => 7,
-                'name' => $this->getLocationName('Paris', $lang),
-                'latitude' => 48.8566,
-                'longitude' => 2.3522,
-                'timezone' => 'Europe/Paris'
-            ],
-            [
-                'id' => 8,
-                'name' => $this->getLocationName('Montreal', $lang),
-                'latitude' => 45.5017,
-                'longitude' => -73.5673,
-                'timezone' => 'America/Montreal'
-            ],
-            [
-                'id' => 9,
-                'name' => $this->getLocationName('Mexico City', $lang),
-                'latitude' => 19.4326,
-                'longitude' => -99.1332,
-                'timezone' => 'America/Mexico_City'
-            ],
-            [
-                'id' => 10,
-                'name' => $this->getLocationName('Buenos Aires', $lang),
-                'latitude' => -34.6037,
-                'longitude' => -58.3816,
-                'timezone' => 'America/Argentina/Buenos_Aires'
-            ]
+        // Extended list of Jewish communities worldwide
+        $allLocations = [
+            // Israel
+            ['id' => 'jerusalem', 'name' => $this->getLocationName('Jerusalem', $lang), 'latitude' => 31.7683, 'longitude' => 35.2137, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'tel-aviv', 'name' => $this->getLocationName('Tel Aviv', $lang), 'latitude' => 32.0853, 'longitude' => 34.7818, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'haifa', 'name' => 'Haifa', 'latitude' => 32.7940, 'longitude' => 34.9896, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'bnei-brak', 'name' => 'Bnei Brak', 'latitude' => 32.0807, 'longitude' => 34.8338, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'ashdod', 'name' => 'Ashdod', 'latitude' => 31.8044, 'longitude' => 34.6553, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'beer-sheva', 'name' => 'Beer Sheva', 'latitude' => 31.2530, 'longitude' => 34.7915, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'eilat', 'name' => 'Eilat', 'latitude' => 29.5577, 'longitude' => 34.9519, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'tiberias', 'name' => 'Tiberias', 'latitude' => 32.7922, 'longitude' => 35.5312, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            ['id' => 'tzfat', 'name' => 'Tzfat (Safed)', 'latitude' => 32.9658, 'longitude' => 35.4983, 'timezone' => 'Asia/Jerusalem', 'country' => 'Israel'],
+            
+            // USA
+            ['id' => 'new-york', 'name' => $this->getLocationName('New York', $lang), 'latitude' => 40.7128, 'longitude' => -74.0060, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'brooklyn', 'name' => 'Brooklyn', 'latitude' => 40.6782, 'longitude' => -73.9442, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'lakewood', 'name' => 'Lakewood, NJ', 'latitude' => 40.0978, 'longitude' => -74.2176, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'monsey', 'name' => 'Monsey, NY', 'latitude' => 41.1112, 'longitude' => -74.0685, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'los-angeles', 'name' => $this->getLocationName('Los Angeles', $lang), 'latitude' => 34.0522, 'longitude' => -118.2437, 'timezone' => 'America/Los_Angeles', 'country' => 'USA'],
+            ['id' => 'miami', 'name' => $this->getLocationName('Miami', $lang), 'latitude' => 25.7617, 'longitude' => -80.1918, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'chicago', 'name' => 'Chicago', 'latitude' => 41.8781, 'longitude' => -87.6298, 'timezone' => 'America/Chicago', 'country' => 'USA'],
+            ['id' => 'boston', 'name' => 'Boston', 'latitude' => 42.3601, 'longitude' => -71.0589, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'baltimore', 'name' => 'Baltimore', 'latitude' => 39.2904, 'longitude' => -76.6122, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'detroit', 'name' => 'Detroit', 'latitude' => 42.3314, 'longitude' => -83.0458, 'timezone' => 'America/Detroit', 'country' => 'USA'],
+            ['id' => 'cleveland', 'name' => 'Cleveland', 'latitude' => 41.4993, 'longitude' => -81.6944, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'atlanta', 'name' => 'Atlanta', 'latitude' => 33.7490, 'longitude' => -84.3880, 'timezone' => 'America/New_York', 'country' => 'USA'],
+            ['id' => 'houston', 'name' => 'Houston', 'latitude' => 29.7604, 'longitude' => -95.3698, 'timezone' => 'America/Chicago', 'country' => 'USA'],
+            ['id' => 'dallas', 'name' => 'Dallas', 'latitude' => 32.7767, 'longitude' => -96.7970, 'timezone' => 'America/Chicago', 'country' => 'USA'],
+            ['id' => 'denver', 'name' => 'Denver', 'latitude' => 39.7392, 'longitude' => -104.9903, 'timezone' => 'America/Denver', 'country' => 'USA'],
+            ['id' => 'phoenix', 'name' => 'Phoenix', 'latitude' => 33.4484, 'longitude' => -112.0740, 'timezone' => 'America/Phoenix', 'country' => 'USA'],
+            ['id' => 'seattle', 'name' => 'Seattle', 'latitude' => 47.6062, 'longitude' => -122.3321, 'timezone' => 'America/Los_Angeles', 'country' => 'USA'],
+            ['id' => 'san-francisco', 'name' => 'San Francisco', 'latitude' => 37.7749, 'longitude' => -122.4194, 'timezone' => 'America/Los_Angeles', 'country' => 'USA'],
+            
+            // Europe
+            ['id' => 'london', 'name' => $this->getLocationName('London', $lang), 'latitude' => 51.5074, 'longitude' => -0.1278, 'timezone' => 'Europe/London', 'country' => 'UK'],
+            ['id' => 'manchester', 'name' => 'Manchester', 'latitude' => 53.4808, 'longitude' => -2.2426, 'timezone' => 'Europe/London', 'country' => 'UK'],
+            ['id' => 'paris', 'name' => $this->getLocationName('Paris', $lang), 'latitude' => 48.8566, 'longitude' => 2.3522, 'timezone' => 'Europe/Paris', 'country' => 'France'],
+            ['id' => 'antwerp', 'name' => 'Antwerp', 'latitude' => 51.2194, 'longitude' => 4.4025, 'timezone' => 'Europe/Brussels', 'country' => 'Belgium'],
+            ['id' => 'amsterdam', 'name' => 'Amsterdam', 'latitude' => 52.3676, 'longitude' => 4.9041, 'timezone' => 'Europe/Amsterdam', 'country' => 'Netherlands'],
+            ['id' => 'zurich', 'name' => 'Zurich', 'latitude' => 47.3769, 'longitude' => 8.5417, 'timezone' => 'Europe/Zurich', 'country' => 'Switzerland'],
+            ['id' => 'vienna', 'name' => 'Vienna', 'latitude' => 48.2082, 'longitude' => 16.3738, 'timezone' => 'Europe/Vienna', 'country' => 'Austria'],
+            
+            // Canada
+            ['id' => 'montreal', 'name' => $this->getLocationName('Montreal', $lang), 'latitude' => 45.5017, 'longitude' => -73.5673, 'timezone' => 'America/Montreal', 'country' => 'Canada'],
+            ['id' => 'toronto', 'name' => 'Toronto', 'latitude' => 43.6532, 'longitude' => -79.3832, 'timezone' => 'America/Toronto', 'country' => 'Canada'],
+            
+            // Latin America
+            ['id' => 'mexico-city', 'name' => 'Mexico City', 'latitude' => 19.4326, 'longitude' => -99.1332, 'timezone' => 'America/Mexico_City', 'country' => 'Mexico'],
+            ['id' => 'buenos-aires', 'name' => 'Buenos Aires', 'latitude' => -34.6037, 'longitude' => -58.3816, 'timezone' => 'America/Argentina/Buenos_Aires', 'country' => 'Argentina'],
+            ['id' => 'sao-paulo', 'name' => 'São Paulo', 'latitude' => -23.5505, 'longitude' => -46.6333, 'timezone' => 'America/Sao_Paulo', 'country' => 'Brazil'],
+            ['id' => 'rio-de-janeiro', 'name' => 'Rio de Janeiro', 'latitude' => -22.9068, 'longitude' => -43.1729, 'timezone' => 'America/Sao_Paulo', 'country' => 'Brazil'],
+            
+            // Australia
+            ['id' => 'sydney', 'name' => 'Sydney', 'latitude' => -33.8688, 'longitude' => 151.2093, 'timezone' => 'Australia/Sydney', 'country' => 'Australia'],
+            ['id' => 'melbourne', 'name' => 'Melbourne', 'latitude' => -37.8136, 'longitude' => 144.9631, 'timezone' => 'Australia/Melbourne', 'country' => 'Australia'],
+            
+            // South Africa
+            ['id' => 'johannesburg', 'name' => 'Johannesburg', 'latitude' => -26.2041, 'longitude' => 28.0473, 'timezone' => 'Africa/Johannesburg', 'country' => 'South Africa'],
+            ['id' => 'cape-town', 'name' => 'Cape Town', 'latitude' => -33.9249, 'longitude' => 18.4241, 'timezone' => 'Africa/Johannesburg', 'country' => 'South Africa'],
         ];
         
-        // Filter locations by search term if provided
-        if (!empty($search)) {
-            $locations = array_filter($locations, function($location) use ($search) {
-                return stripos($location['name'], $search) !== false;
-            });
-            $locations = array_values($locations); // Re-index array
+        // If no search term, return popular locations
+        if (empty($search)) {
+            // Return the first 10 as defaults
+            $defaultLocations = array_slice($allLocations, 0, 10);
+            return response()->json([
+                'status' => 'success',
+                'locations' => $defaultLocations
+            ]);
         }
         
+        // Filter locations by search term
+        $searchLower = strtolower($search);
+        $filtered = array_filter($allLocations, function($location) use ($searchLower) {
+            return stripos($location['name'], $searchLower) !== false ||
+                   stripos($location['country'], $searchLower) !== false ||
+                   stripos($location['id'], $searchLower) !== false;
+        });
+        
+        // If we have results, return them
+        if (!empty($filtered)) {
+            return response()->json([
+                'status' => 'success',
+                'locations' => array_values($filtered)
+            ]);
+        }
+        
+        // If no results found, return empty array with message
         return response()->json([
             'status' => 'success',
-            'locations' => $locations
+            'locations' => [],
+            'message' => 'No locations found matching your search'
         ]);
+    }
+    
+    private function getOsmLanguage($lang)
+    {
+        $osmLangs = [
+            'en' => 'en',
+            'es' => 'es',
+            'he' => 'he',
+            'ar' => 'ar'
+        ];
+        
+        return $osmLangs[$lang] ?? 'en';
+    }
+    
+    private function estimateTimezone($longitude, $latitude)
+    {
+        // Common timezone mappings based on regions
+        // Israel
+        if ($longitude >= 34 && $longitude <= 36 && $latitude >= 29 && $latitude <= 34) {
+            return 'Asia/Jerusalem';
+        }
+        
+        // USA East Coast
+        if ($longitude >= -82 && $longitude <= -70 && $latitude >= 24 && $latitude <= 48) {
+            return 'America/New_York';
+        }
+        
+        // USA West Coast
+        if ($longitude >= -125 && $longitude <= -115 && $latitude >= 32 && $latitude <= 49) {
+            return 'America/Los_Angeles';
+        }
+        
+        // USA Central
+        if ($longitude >= -100 && $longitude <= -82 && $latitude >= 25 && $latitude <= 50) {
+            return 'America/Chicago';
+        }
+        
+        // UK
+        if ($longitude >= -8 && $longitude <= 2 && $latitude >= 50 && $latitude <= 60) {
+            return 'Europe/London';
+        }
+        
+        // France/Western Europe
+        if ($longitude >= -5 && $longitude <= 10 && $latitude >= 42 && $latitude <= 52) {
+            return 'Europe/Paris';
+        }
+        
+        // Canada Eastern
+        if ($longitude >= -80 && $longitude <= -52 && $latitude >= 43 && $latitude <= 55) {
+            return 'America/Toronto';
+        }
+        
+        // Simple UTC offset estimation based on longitude
+        $offset = round($longitude / 15);
+        if ($offset == 0) {
+            return 'UTC';
+        } elseif ($offset > 0) {
+            return 'Etc/GMT-' . abs($offset); // Note: Etc zones have inverted signs
+        } else {
+            return 'Etc/GMT+' . abs($offset);
+        }
     }
 
     private function getLocationName($city, $lang)
@@ -376,18 +445,6 @@ class ZmanimController extends Controller
                 'es' => 'Montreal',
                 'he' => 'מונטריאול',
                 'ar' => 'مونتريال'
-            ],
-            'Mexico City' => [
-                'en' => 'Mexico City',
-                'es' => 'Ciudad de México',
-                'he' => 'מקסיקו סיטי',
-                'ar' => 'مكسيكو سيتي'
-            ],
-            'Buenos Aires' => [
-                'en' => 'Buenos Aires',
-                'es' => 'Buenos Aires',
-                'he' => 'בואנוס איירס',
-                'ar' => 'بوينس آيرس'
             ]
         ];
         
