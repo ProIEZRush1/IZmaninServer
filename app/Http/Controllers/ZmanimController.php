@@ -30,13 +30,18 @@ class ZmanimController extends Controller
         'minchaKetanaMGA' => 'מנחה קטנה מג״א',
         'plagHaMincha' => 'פלג המנחה',
         'sunset' => 'שקיעה',
-        'beinHaShmashos' => 'בין השמשות',
-        'dusk' => 'סוף השקיעה',
-        'tzeit7083deg' => 'צאת הכוכבים (7.083°)',
-        'tzeit85deg' => 'צאת הכוכבים (8.5°)',
+        'tzeit35min' => 'צאת הכוכבים (35 דקות)',
         'tzeit42min' => 'צאת הכוכבים (42 דקות)',
         'tzeit50min' => 'צאת הכוכבים (50 דקות)',
         'tzeit72min' => 'צאת הכוכבים (72 דקות)',
+    ];
+    
+    // Times to exclude from the response
+    private $excludedTimes = [
+        'beinHaShmashos',
+        'dusk',
+        'tzeit7083deg',
+        'tzeit85deg'
     ];
 
     private $translations = [
@@ -62,10 +67,7 @@ class ZmanimController extends Controller
             'minchaKetanaMGA' => 'Mincha Ketana MGA',
             'plagHaMincha' => 'Plag HaMincha',
             'sunset' => 'Sunset',
-            'beinHaShmashos' => 'Twilight',
-            'dusk' => 'Civil Dusk',
-            'tzeit7083deg' => 'Nightfall (7.083°)',
-            'tzeit85deg' => 'Nightfall (8.5°)',
+            'tzeit35min' => 'Nightfall (35 min)',
             'tzeit42min' => 'Nightfall (42 min)',
             'tzeit50min' => 'Nightfall (50 min)',
             'tzeit72min' => 'Nightfall (72 min)',
@@ -92,10 +94,7 @@ class ZmanimController extends Controller
             'minchaKetanaMGA' => 'Minjá Ketaná MGA',
             'plagHaMincha' => 'Plag HaMinjá',
             'sunset' => 'Puesta del sol',
-            'beinHaShmashos' => 'Crepúsculo',
-            'dusk' => 'Anochecer civil',
-            'tzeit7083deg' => 'Anochecer (7.083°)',
-            'tzeit85deg' => 'Anochecer (8.5°)',
+            'tzeit35min' => 'Anochecer (35 min)',
             'tzeit42min' => 'Anochecer (42 min)',
             'tzeit50min' => 'Anochecer (50 min)',
             'tzeit72min' => 'Anochecer (72 min)',
@@ -122,10 +121,7 @@ class ZmanimController extends Controller
             'minchaKetanaMGA' => 'مينحا كيتانا MGA',
             'plagHaMincha' => 'بلاغ هامينحا',
             'sunset' => 'غروب الشمس',
-            'beinHaShmashos' => 'الشفق',
-            'dusk' => 'الغسق المدني',
-            'tzeit7083deg' => 'حلول الليل (7.083°)',
-            'tzeit85deg' => 'حلول الليل (8.5°)',
+            'tzeit35min' => 'حلول الليل (35 دقيقة)',
             'tzeit42min' => 'حلول الليل (42 دقيقة)',
             'tzeit50min' => 'حلول الليل (50 دقيقة)',
             'tzeit72min' => 'حلول الليل (72 دقيقة)',
@@ -167,10 +163,21 @@ class ZmanimController extends Controller
         $sortedTimes = [];
 
         // Process times from Hebcal API
+        $sunsetTime = null;
         foreach ($times as $key => $timeString) {
+            // Skip excluded times
+            if (in_array($key, $this->excludedTimes)) {
+                continue;
+            }
+            
             // Parse the time and format it as HH:MM
             $carbonTime = Carbon::parse($timeString);
             $formattedTime = $carbonTime->format('H:i');
+            
+            // Store sunset time for calculating 35 minutes
+            if ($key === 'sunset') {
+                $sunsetTime = $carbonTime;
+            }
             
             // Get Hebrew name
             $hebrewName = $this->hebrewNames[$key] ?? $key;
@@ -190,6 +197,24 @@ class ZmanimController extends Controller
             
             // Use the time as key for sorting
             $sortedTimes[$formattedTime . '_' . $key] = $zmanData;
+        }
+        
+        // Add Tzet 35 minutes if we have sunset time
+        if ($sunsetTime) {
+            $tzeit35 = $sunsetTime->copy()->addMinutes(35);
+            $formattedTime = $tzeit35->format('H:i');
+            
+            $translation = null;
+            if ($lang !== 'he' && isset($this->translations[$lang]['tzeit35min'])) {
+                $translation = $this->translations[$lang]['tzeit35min'];
+            }
+            
+            $sortedTimes[$formattedTime . '_tzeit35min'] = [
+                'key' => 'tzeit35min',
+                'name' => $this->hebrewNames['tzeit35min'],
+                'translation' => $translation,
+                'time' => $formattedTime,
+            ];
         }
 
         // Sort by time
