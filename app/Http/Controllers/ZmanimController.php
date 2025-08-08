@@ -9,37 +9,127 @@ use Carbon\Carbon;
 class ZmanimController extends Controller
 {
     private $hebrewNames = [
-        'alot_hashachar' => 'עלות השחר',
+        'chatzotNight' => 'חצות הלילה',
+        'alotHaShachar' => 'עלות השחר',
         'misheyakir' => 'משיכיר',
+        'misheyakirMachmir' => 'משיכיר לחומרה',
+        'dawn' => 'עמוד השחר',
         'sunrise' => 'הנץ החמה',
-        'sof_zman_shema' => 'סוף זמן קריאת שמע',
-        'sof_zman_tefillah' => 'סוף זמן תפילה',
+        'sofZmanShmaMGA19Point8' => 'סוף זמן ק״ש מג״א (19.8°)',
+        'sofZmanShmaMGA16Point1' => 'סוף זמן ק״ש מג״א (16.1°)',
+        'sofZmanShmaMGA' => 'סוף זמן ק״ש מג״א',
+        'sofZmanShma' => 'סוף זמן קריאת שמע',
+        'sofZmanTfillaMGA19Point8' => 'סוף זמן תפילה מג״א (19.8°)',
+        'sofZmanTfillaMGA16Point1' => 'סוף זמן תפילה מג״א (16.1°)',
+        'sofZmanTfillaMGA' => 'סוף זמן תפילה מג״א',
+        'sofZmanTfilla' => 'סוף זמן תפילה',
         'chatzot' => 'חצות',
-        'mincha_gedolah' => 'מנחה גדולה',
-        'mincha_ketanah' => 'מנחה קטנה',
-        'plag_hamincha' => 'פלג המנחה',
+        'minchaGedola' => 'מנחה גדולה',
+        'minchaGedolaMGA' => 'מנחה גדולה מג״א',
+        'minchaKetana' => 'מנחה קטנה',
+        'minchaKetanaMGA' => 'מנחה קטנה מג״א',
+        'plagHaMincha' => 'פלג המנחה',
         'sunset' => 'שקיעה',
-        'tzeis_hakochavim' => 'צאת הכוכבים',
-        'chatzot_layla' => 'חצות לילה'
+        'beinHaShmashos' => 'בין השמשות',
+        'dusk' => 'סוף השקיעה',
+        'tzeit7083deg' => 'צאת הכוכבים (7.083°)',
+        'tzeit85deg' => 'צאת הכוכבים (8.5°)',
+        'tzeit42min' => 'צאת הכוכבים (42 דקות)',
+        'tzeit50min' => 'צאת הכוכבים (50 דקות)',
+        'tzeit72min' => 'צאת הכוכבים (72 דקות)',
     ];
 
     private $translations = [
         'en' => [
+            'chatzotNight' => 'Midnight',
+            'alotHaShachar' => 'Dawn',
+            'misheyakir' => 'Earliest Tallit',
+            'misheyakirMachmir' => 'Earliest Tallit (Stringent)',
+            'dawn' => 'Civil Dawn',
             'sunrise' => 'Sunrise',
-            'sunset' => 'Sunset'
+            'sofZmanShmaMGA19Point8' => 'Latest Shema MGA (19.8°)',
+            'sofZmanShmaMGA16Point1' => 'Latest Shema MGA (16.1°)',
+            'sofZmanShmaMGA' => 'Latest Shema MGA',
+            'sofZmanShma' => 'Latest Shema',
+            'sofZmanTfillaMGA19Point8' => 'Latest Tefillah MGA (19.8°)',
+            'sofZmanTfillaMGA16Point1' => 'Latest Tefillah MGA (16.1°)',
+            'sofZmanTfillaMGA' => 'Latest Tefillah MGA',
+            'sofZmanTfilla' => 'Latest Tefillah',
+            'chatzot' => 'Midday',
+            'minchaGedola' => 'Earliest Mincha',
+            'minchaGedolaMGA' => 'Earliest Mincha MGA',
+            'minchaKetana' => 'Mincha Ketana',
+            'minchaKetanaMGA' => 'Mincha Ketana MGA',
+            'plagHaMincha' => 'Plag HaMincha',
+            'sunset' => 'Sunset',
+            'beinHaShmashos' => 'Twilight',
+            'dusk' => 'Civil Dusk',
+            'tzeit7083deg' => 'Nightfall (7.083°)',
+            'tzeit85deg' => 'Nightfall (8.5°)',
+            'tzeit42min' => 'Nightfall (42 min)',
+            'tzeit50min' => 'Nightfall (50 min)',
+            'tzeit72min' => 'Nightfall (72 min)',
         ],
         'es' => [
-            'sunrise' => 'Salida del Sol',
-            'sunset' => 'Puesta del Sol'
-        ],
-        'he' => [
-            'sunrise' => 'הנץ החמה',
-            'sunset' => 'שקיעה'
+            'chatzotNight' => 'Medianoche',
+            'alotHaShachar' => 'Amanecer',
+            'misheyakir' => 'Talit más temprano',
+            'misheyakirMachmir' => 'Talit más temprano (Estricto)',
+            'dawn' => 'Alba civil',
+            'sunrise' => 'Salida del sol',
+            'sofZmanShmaMGA19Point8' => 'Último Shemá MGA (19.8°)',
+            'sofZmanShmaMGA16Point1' => 'Último Shemá MGA (16.1°)',
+            'sofZmanShmaMGA' => 'Último Shemá MGA',
+            'sofZmanShma' => 'Último Shemá',
+            'sofZmanTfillaMGA19Point8' => 'Última Tefilá MGA (19.8°)',
+            'sofZmanTfillaMGA16Point1' => 'Última Tefilá MGA (16.1°)',
+            'sofZmanTfillaMGA' => 'Última Tefilá MGA',
+            'sofZmanTfilla' => 'Última Tefilá',
+            'chatzot' => 'Mediodía',
+            'minchaGedola' => 'Minjá temprana',
+            'minchaGedolaMGA' => 'Minjá temprana MGA',
+            'minchaKetana' => 'Minjá Ketaná',
+            'minchaKetanaMGA' => 'Minjá Ketaná MGA',
+            'plagHaMincha' => 'Plag HaMinjá',
+            'sunset' => 'Puesta del sol',
+            'beinHaShmashos' => 'Crepúsculo',
+            'dusk' => 'Anochecer civil',
+            'tzeit7083deg' => 'Anochecer (7.083°)',
+            'tzeit85deg' => 'Anochecer (8.5°)',
+            'tzeit42min' => 'Anochecer (42 min)',
+            'tzeit50min' => 'Anochecer (50 min)',
+            'tzeit72min' => 'Anochecer (72 min)',
         ],
         'ar' => [
+            'chatzotNight' => 'منتصف الليل',
+            'alotHaShachar' => 'الفجر',
+            'misheyakir' => 'أقرب وقت للطاليت',
+            'misheyakirMachmir' => 'أقرب وقت للطاليت (صارم)',
+            'dawn' => 'الفجر المدني',
             'sunrise' => 'شروق الشمس',
-            'sunset' => 'غروب الشمس'
-        ]
+            'sofZmanShmaMGA19Point8' => 'آخر وقت شيما MGA (19.8°)',
+            'sofZmanShmaMGA16Point1' => 'آخر وقت شيما MGA (16.1°)',
+            'sofZmanShmaMGA' => 'آخر وقت شيما MGA',
+            'sofZmanShma' => 'آخر وقت شيما',
+            'sofZmanTfillaMGA19Point8' => 'آخر وقت الصلاة MGA (19.8°)',
+            'sofZmanTfillaMGA16Point1' => 'آخر وقت الصلاة MGA (16.1°)',
+            'sofZmanTfillaMGA' => 'آخر وقت الصلاة MGA',
+            'sofZmanTfilla' => 'آخر وقت الصلاة',
+            'chatzot' => 'منتصف النهار',
+            'minchaGedola' => 'مينحا المبكرة',
+            'minchaGedolaMGA' => 'مينحا المبكرة MGA',
+            'minchaKetana' => 'مينحا كيتانا',
+            'minchaKetanaMGA' => 'مينحا كيتانا MGA',
+            'plagHaMincha' => 'بلاغ هامينحا',
+            'sunset' => 'غروب الشمس',
+            'beinHaShmashos' => 'الشفق',
+            'dusk' => 'الغسق المدني',
+            'tzeit7083deg' => 'حلول الليل (7.083°)',
+            'tzeit85deg' => 'حلول الليل (8.5°)',
+            'tzeit42min' => 'حلول الليل (42 دقيقة)',
+            'tzeit50min' => 'حلول الليل (50 دقيقة)',
+            'tzeit72min' => 'حلول الليل (72 دقيقة)',
+        ],
     ];
 
     public function getZmanim(Request $request)
@@ -49,105 +139,74 @@ class ZmanimController extends Controller
             'longitude' => 'required|numeric|between:-180,180',
             'date' => 'nullable|date',
             'timezone' => 'nullable|string',
-            'lang' => 'nullable|in:en,es,he,ar'
+            'lang' => 'nullable|string|in:en,es,he,ar',
         ]);
 
-        $latitude = $request->latitude;
-        $longitude = $request->longitude;
-        $date = $request->date ?? Carbon::now()->format('Y-m-d');
-        $timezone = $request->timezone ?? 'UTC';
-        $lang = $request->lang ?? 'en';
+        $latitude = $request->input('latitude');
+        $longitude = $request->input('longitude');
+        $date = $request->input('date', now()->format('Y-m-d'));
+        $lang = $request->input('lang', 'en');
 
-        try {
-            $zmanim = $this->calculateZmanim($latitude, $longitude, $date, $timezone);
-            $translatedZmanim = $this->translateZmanim($zmanim, $lang);
-            
-            return response()->json([
-                'status' => 'success',
-                'date' => $date,
-                'location' => [
-                    'latitude' => $latitude,
-                    'longitude' => $longitude,
-                    'timezone' => $timezone
-                ],
-                'zmanim' => $translatedZmanim,
-                'language' => $lang
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ], 500);
+        // Call Hebcal API
+        $response = Http::get('https://www.hebcal.com/zmanim', [
+            'cfg' => 'json',
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'date' => $date,
+        ]);
+
+        if (!$response->successful()) {
+            return response()->json(['error' => 'Failed to fetch Zmanim'], 500);
         }
-    }
 
-    private function calculateZmanim($latitude, $longitude, $date, $timezone)
-    {
-        // For now, using local calculation
-        // In production, you can integrate with a real Zmanim API
-        return $this->calculateLocalZmanim($latitude, $longitude, $date, $timezone);
-    }
+        $data = $response->json();
+        $times = $data['times'] ?? [];
+        $timezone = $data['location']['tzid'] ?? 'UTC';
 
-    private function calculateLocalZmanim($latitude, $longitude, $date, $timezone)
-    {
-        // Basic astronomical calculations for zmanim
-        $dateTime = Carbon::parse($date, $timezone);
-        
-        // These are simplified calculations - in production, use proper astronomical formulas
-        $sunrise = $dateTime->copy()->setTime(6, 0);
-        $sunset = $dateTime->copy()->setTime(18, 30);
-        $dayLength = $sunset->diffInMinutes($sunrise);
-        $shaahZmanit = $dayLength / 12;
-        
-        return [
-            'alot_hashachar' => $sunrise->copy()->subMinutes(72)->format('H:i'),
-            'misheyakir' => $sunrise->copy()->subMinutes(45)->format('H:i'),
-            'sunrise' => $sunrise->format('H:i'),
-            'sof_zman_shema' => $sunrise->copy()->addMinutes($shaahZmanit * 3)->format('H:i'),
-            'sof_zman_tefillah' => $sunrise->copy()->addMinutes($shaahZmanit * 4)->format('H:i'),
-            'chatzot' => $sunrise->copy()->addMinutes($shaahZmanit * 6)->format('H:i'),
-            'mincha_gedolah' => $sunrise->copy()->addMinutes($shaahZmanit * 6.5)->format('H:i'),
-            'mincha_ketanah' => $sunrise->copy()->addMinutes($shaahZmanit * 9.5)->format('H:i'),
-            'plag_hamincha' => $sunrise->copy()->addMinutes($shaahZmanit * 10.75)->format('H:i'),
-            'sunset' => $sunset->format('H:i'),
-            'tzeis_hakochavim' => $sunset->copy()->addMinutes(45)->format('H:i'),
-            'chatzot_layla' => $dateTime->copy()->setTime(0, 0)->format('H:i')
-        ];
-    }
+        $zmanim = [];
+        $sortedTimes = [];
 
-    private function translateZmanim($zmanim, $lang)
-    {
-        $translated = [];
-        foreach ($zmanim as $key => $time) {
-            // Use Hebrew name as primary
+        // Process times from Hebcal API
+        foreach ($times as $key => $timeString) {
+            // Parse the time and format it as HH:MM
+            $carbonTime = Carbon::parse($timeString);
+            $formattedTime = $carbonTime->format('H:i');
+            
+            // Get Hebrew name
             $hebrewName = $this->hebrewNames[$key] ?? $key;
             
-            // Add translation for sunrise/sunset only
+            // Get translation based on language
             $translation = null;
-            if (isset($this->translations[$lang][$key])) {
+            if ($lang !== 'he' && isset($this->translations[$lang][$key])) {
                 $translation = $this->translations[$lang][$key];
             }
             
-            $translated[] = [
+            $zmanData = [
                 'key' => $key,
                 'name' => $hebrewName,
                 'translation' => $translation,
-                'time' => $time,
-                'sortTime' => $time ? str_replace(':', '', $time) : '9999'
+                'time' => $formattedTime,
             ];
+            
+            // Use the time as key for sorting
+            $sortedTimes[$formattedTime . '_' . $key] = $zmanData;
         }
-        
+
         // Sort by time
-        usort($translated, function($a, $b) {
-            return strcmp($a['sortTime'], $b['sortTime']);
-        });
+        ksort($sortedTimes);
         
-        // Remove sortTime before returning
-        array_walk($translated, function(&$item) {
-            unset($item['sortTime']);
-        });
-        
-        return $translated;
+        // Convert to indexed array
+        $zmanim = array_values($sortedTimes);
+
+        return response()->json([
+            'zmanim' => $zmanim,
+            'location' => [
+                'latitude' => $latitude,
+                'longitude' => $longitude,
+                'timezone' => $timezone,
+            ],
+            'date' => $date,
+        ]);
     }
 
     public function getLocations(Request $request)
@@ -190,6 +249,41 @@ class ZmanimController extends Controller
                 'latitude' => 34.0522,
                 'longitude' => -118.2437,
                 'timezone' => 'America/Los_Angeles'
+            ],
+            [
+                'id' => 6,
+                'name' => $this->getLocationName('Miami', $lang),
+                'latitude' => 25.7617,
+                'longitude' => -80.1918,
+                'timezone' => 'America/New_York'
+            ],
+            [
+                'id' => 7,
+                'name' => $this->getLocationName('Paris', $lang),
+                'latitude' => 48.8566,
+                'longitude' => 2.3522,
+                'timezone' => 'Europe/Paris'
+            ],
+            [
+                'id' => 8,
+                'name' => $this->getLocationName('Montreal', $lang),
+                'latitude' => 45.5017,
+                'longitude' => -73.5673,
+                'timezone' => 'America/Montreal'
+            ],
+            [
+                'id' => 9,
+                'name' => $this->getLocationName('Mexico City', $lang),
+                'latitude' => 19.4326,
+                'longitude' => -99.1332,
+                'timezone' => 'America/Mexico_City'
+            ],
+            [
+                'id' => 10,
+                'name' => $this->getLocationName('Buenos Aires', $lang),
+                'latitude' => -34.6037,
+                'longitude' => -58.3816,
+                'timezone' => 'America/Argentina/Buenos_Aires'
             ]
         ];
         
@@ -239,6 +333,36 @@ class ZmanimController extends Controller
                 'es' => 'Los Ángeles',
                 'he' => 'לוס אנג\'לס',
                 'ar' => 'لوس أنجلوس'
+            ],
+            'Miami' => [
+                'en' => 'Miami',
+                'es' => 'Miami',
+                'he' => 'מיאמי',
+                'ar' => 'ميامي'
+            ],
+            'Paris' => [
+                'en' => 'Paris',
+                'es' => 'París',
+                'he' => 'פריז',
+                'ar' => 'باريس'
+            ],
+            'Montreal' => [
+                'en' => 'Montreal',
+                'es' => 'Montreal',
+                'he' => 'מונטריאול',
+                'ar' => 'مونتريال'
+            ],
+            'Mexico City' => [
+                'en' => 'Mexico City',
+                'es' => 'Ciudad de México',
+                'he' => 'מקסיקו סיטי',
+                'ar' => 'مكسيكو سيتي'
+            ],
+            'Buenos Aires' => [
+                'en' => 'Buenos Aires',
+                'es' => 'Buenos Aires',
+                'he' => 'בואנוס איירס',
+                'ar' => 'بوينس آيرس'
             ]
         ];
         
