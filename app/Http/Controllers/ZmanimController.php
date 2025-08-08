@@ -51,20 +51,6 @@ class ZmanimController extends Controller
             'tzeis_hakochavim' => 'צאת הכוכבים',
             'chatzot_layla' => 'חצות לילה'
         ],
-        'yi' => [
-            'alot_hashachar' => 'עלות השחר',
-            'misheyakir' => 'משיכיר',
-            'sunrise' => 'זונען אויפגאנג',
-            'sof_zman_shema' => 'סוף זמן קריאת שמע',
-            'sof_zman_tefillah' => 'סוף זמן תפילה',
-            'chatzot' => 'חצות',
-            'mincha_gedolah' => 'מנחה גדולה',
-            'mincha_ketanah' => 'מנחה קטנה',
-            'plag_hamincha' => 'פלג המנחה',
-            'sunset' => 'זונען אונטערגאנג',
-            'tzeis_hakochavim' => 'צאת הכוכבים',
-            'chatzot_layla' => 'חצות לילה'
-        ],
         'ar' => [
             'alot_hashachar' => 'الفجر',
             'misheyakir' => 'أقرب وقت للطاليت',
@@ -88,7 +74,7 @@ class ZmanimController extends Controller
             'longitude' => 'required|numeric|between:-180,180',
             'date' => 'nullable|date',
             'timezone' => 'nullable|string',
-            'lang' => 'nullable|in:en,es,he,yi,ar'
+            'lang' => 'nullable|in:en,es,he,ar'
         ]);
 
         $latitude = $request->latitude;
@@ -222,35 +208,30 @@ class ZmanimController extends Controller
                 'en' => 'Jerusalem',
                 'es' => 'Jerusalén',
                 'he' => 'ירושלים',
-                'yi' => 'ירושלים',
                 'ar' => 'القدس'
             ],
             'New York' => [
                 'en' => 'New York',
                 'es' => 'Nueva York',
                 'he' => 'ניו יורק',
-                'yi' => 'ניו יארק',
                 'ar' => 'نيويورك'
             ],
             'London' => [
                 'en' => 'London',
                 'es' => 'Londres',
                 'he' => 'לונדון',
-                'yi' => 'לאנדאן',
                 'ar' => 'لندن'
             ],
             'Tel Aviv' => [
                 'en' => 'Tel Aviv',
                 'es' => 'Tel Aviv',
                 'he' => 'תל אביב',
-                'yi' => 'תל אביב',
                 'ar' => 'تل أبيب'
             ],
             'Los Angeles' => [
                 'en' => 'Los Angeles',
                 'es' => 'Los Ángeles',
                 'he' => 'לוס אנג\'לס',
-                'yi' => 'לאס אנדזשעלעס',
                 'ar' => 'لوس أنجلوس'
             ]
         ];
