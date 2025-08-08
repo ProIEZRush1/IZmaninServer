@@ -8,62 +8,37 @@ use Carbon\Carbon;
 
 class ZmanimController extends Controller
 {
+    private $hebrewNames = [
+        'alot_hashachar' => 'עלות השחר',
+        'misheyakir' => 'משיכיר',
+        'sunrise' => 'הנץ החמה',
+        'sof_zman_shema' => 'סוף זמן קריאת שמע',
+        'sof_zman_tefillah' => 'סוף זמן תפילה',
+        'chatzot' => 'חצות',
+        'mincha_gedolah' => 'מנחה גדולה',
+        'mincha_ketanah' => 'מנחה קטנה',
+        'plag_hamincha' => 'פלג המנחה',
+        'sunset' => 'שקיעה',
+        'tzeis_hakochavim' => 'צאת הכוכבים',
+        'chatzot_layla' => 'חצות לילה'
+    ];
+
     private $translations = [
         'en' => [
-            'alot_hashachar' => 'Dawn',
-            'misheyakir' => 'Earliest Tallit',
             'sunrise' => 'Sunrise',
-            'sof_zman_shema' => 'Latest Shema',
-            'sof_zman_tefillah' => 'Latest Prayer',
-            'chatzot' => 'Midday',
-            'mincha_gedolah' => 'Earliest Mincha',
-            'mincha_ketanah' => 'Mincha Ketana',
-            'plag_hamincha' => 'Plag HaMincha',
-            'sunset' => 'Sunset',
-            'tzeis_hakochavim' => 'Nightfall',
-            'chatzot_layla' => 'Midnight'
+            'sunset' => 'Sunset'
         ],
         'es' => [
-            'alot_hashachar' => 'Amanecer',
-            'misheyakir' => 'Talit Más Temprano',
             'sunrise' => 'Salida del Sol',
-            'sof_zman_shema' => 'Último Shemá',
-            'sof_zman_tefillah' => 'Última Oración',
-            'chatzot' => 'Mediodía',
-            'mincha_gedolah' => 'Minjá Temprana',
-            'mincha_ketanah' => 'Minjá Pequeña',
-            'plag_hamincha' => 'Plag HaMinjá',
-            'sunset' => 'Puesta del Sol',
-            'tzeis_hakochavim' => 'Anochecer',
-            'chatzot_layla' => 'Medianoche'
+            'sunset' => 'Puesta del Sol'
         ],
         'he' => [
-            'alot_hashachar' => 'עלות השחר',
-            'misheyakir' => 'משיכיר',
             'sunrise' => 'הנץ החמה',
-            'sof_zman_shema' => 'סוף זמן קריאת שמע',
-            'sof_zman_tefillah' => 'סוף זמן תפילה',
-            'chatzot' => 'חצות',
-            'mincha_gedolah' => 'מנחה גדולה',
-            'mincha_ketanah' => 'מנחה קטנה',
-            'plag_hamincha' => 'פלג המנחה',
-            'sunset' => 'שקיעה',
-            'tzeis_hakochavim' => 'צאת הכוכבים',
-            'chatzot_layla' => 'חצות לילה'
+            'sunset' => 'שקיעה'
         ],
         'ar' => [
-            'alot_hashachar' => 'الفجر',
-            'misheyakir' => 'أقرب وقت للطاليت',
             'sunrise' => 'شروق الشمس',
-            'sof_zman_shema' => 'آخر وقت للشيما',
-            'sof_zman_tefillah' => 'آخر وقت للصلاة',
-            'chatzot' => 'منتصف النهار',
-            'mincha_gedolah' => 'منحة الكبرى',
-            'mincha_ketanah' => 'منحة الصغرى',
-            'plag_hamincha' => 'بلاغ المنحة',
-            'sunset' => 'غروب الشمس',
-            'tzeis_hakochavim' => 'ظهور النجوم',
-            'chatzot_layla' => 'منتصف الليل'
+            'sunset' => 'غروب الشمس'
         ]
     ];
 
@@ -144,18 +119,41 @@ class ZmanimController extends Controller
     {
         $translated = [];
         foreach ($zmanim as $key => $time) {
+            // Use Hebrew name as primary
+            $hebrewName = $this->hebrewNames[$key] ?? $key;
+            
+            // Add translation for sunrise/sunset only
+            $translation = null;
+            if (isset($this->translations[$lang][$key])) {
+                $translation = $this->translations[$lang][$key];
+            }
+            
             $translated[] = [
                 'key' => $key,
-                'name' => $this->translations[$lang][$key] ?? $key,
-                'time' => $time
+                'name' => $hebrewName,
+                'translation' => $translation,
+                'time' => $time,
+                'sortTime' => $time ? str_replace(':', '', $time) : '9999'
             ];
         }
+        
+        // Sort by time
+        usort($translated, function($a, $b) {
+            return strcmp($a['sortTime'], $b['sortTime']);
+        });
+        
+        // Remove sortTime before returning
+        array_walk($translated, function(&$item) {
+            unset($item['sortTime']);
+        });
+        
         return $translated;
     }
 
     public function getLocations(Request $request)
     {
         $lang = $request->lang ?? 'en';
+        $search = strtolower($request->search ?? '');
         
         $locations = [
             [
@@ -194,6 +192,14 @@ class ZmanimController extends Controller
                 'timezone' => 'America/Los_Angeles'
             ]
         ];
+        
+        // Filter locations by search term if provided
+        if (!empty($search)) {
+            $locations = array_filter($locations, function($location) use ($search) {
+                return stripos($location['name'], $search) !== false;
+            });
+            $locations = array_values($locations); // Re-index array
+        }
         
         return response()->json([
             'status' => 'success',
