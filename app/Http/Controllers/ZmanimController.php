@@ -45,6 +45,29 @@ class ZmanimController extends Controller
     ];
 
     private $translations = [
+        'fr' => [
+            'chatzotNight' => 'Minuit',
+            'alotHaShachar' => 'Aube',
+            'misheyakir' => 'Tallit le plus tôt',
+            'misheyakirMachmir' => 'Tallit le plus tôt (Strict)',
+            'dawn' => 'Aube civile',
+            'sunrise' => 'Lever du soleil',
+            'sofZmanShmaMGA' => 'Dernier Shema MGA',
+            'sofZmanShma' => 'Dernier Shema GRA',
+            'sofZmanTfillaMGA' => 'Dernière Tefillah MGA',
+            'sofZmanTfilla' => 'Dernière Tefillah GRA',
+            'chatzot' => 'Midi',
+            'minchaGedola' => 'Minha précoce GRA',
+            'minchaGedolaMGA' => 'Minha précoce MGA',
+            'minchaKetana' => 'Minha Ketana GRA',
+            'minchaKetanaMGA' => 'Minha Ketana MGA',
+            'plagHaMincha' => 'Plag HaMinha',
+            'sunset' => 'Coucher du soleil',
+            'tzeit35min' => 'Tombée de la nuit (35 min)',
+            'tzeit42min' => 'Tombée de la nuit (42 min)',
+            'tzeit50min' => 'Tombée de la nuit (50 min)',
+            'tzeit72min' => 'Tombée de la nuit (72 min)',
+        ],
         'en' => [
             'chatzotNight' => 'Midnight',
             'alotHaShachar' => 'Dawn',
@@ -123,7 +146,7 @@ class ZmanimController extends Controller
             'longitude' => 'required|numeric|between:-180,180',
             'date' => 'nullable|date',
             'timezone' => 'nullable|string',
-            'lang' => 'nullable|string|in:en,es,he,ar',
+            'lang' => 'nullable|string|in:en,es,he,ar,fr',
         ]);
 
         $latitude = $request->input('latitude');
