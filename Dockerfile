@@ -6,7 +6,8 @@ RUN apt update && apt install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) pcntl opcache pdo pdo_mysql intl zip gd exif ftp bcmath \
     && pecl install redis \
-    && docker-php-ext-enable redis
+    && docker-php-ext-enable redis \
+    && apt clean && rm -rf /var/lib/apt/lists/*
 
 # Set timezone to Mexico City
 ENV TZ=America/Mexico_City
@@ -27,7 +28,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Install Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+    && apt-get install -y nodejs \
+    && apt clean && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /var/www/html
@@ -36,18 +38,21 @@ WORKDIR /var/www/html
 RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \
     && chown -R unit:unit /var/www/html
 
-# Copy package files first for better caching
-COPY package*.json ./
-RUN npm install
+# --- Dependency layers (cached unless lock files change) ---
 
-# Copy application files (including artisan)
-COPY . .
-
-# Install composer dependencies (after copying artisan)
-# Skip post-install scripts to avoid errors during build
+# Install composer dependencies
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-scripts
 
-# Run post-install scripts separately with error handling
+# Install node dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# --- Application code (changes frequently, rebuilds fast from here) ---
+
+COPY . .
+
+# Run post-install scripts
 RUN php artisan package:discover --ansi || true \
     && php artisan config:clear || true \
     && php artisan cache:clear || true
