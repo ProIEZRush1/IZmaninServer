@@ -1,13 +1,14 @@
 FROM unit:1.34.1-php8.3
 
-# Install dependencies
+# Install system dependencies
 RUN apt update && apt install -y \
     curl unzip git libicu-dev libzip-dev libpng-dev libjpeg-dev libfreetype6-dev libssl-dev tzdata \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) pcntl opcache pdo pdo_mysql intl zip gd exif ftp bcmath \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
     && apt clean && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions \
+    && install-php-extensions pcntl opcache pdo pdo_mysql intl zip gd exif ftp bcmath
 
 # Set timezone to Mexico City
 ENV TZ=America/Mexico_City
