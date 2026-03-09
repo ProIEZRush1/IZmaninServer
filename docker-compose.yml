@@ -7,6 +7,8 @@ services:
     env_file: .env
     expose:
       - '8000'
+    labels:
+      - traefik.http.services.app.loadbalancer.server.port=8000
     volumes:
       - 'app_storage:/var/www/html/storage'
     networks:
